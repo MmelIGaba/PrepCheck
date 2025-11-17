@@ -47,7 +47,19 @@ PrepCheck is a self-assessment platform designed to help students evaluate their
 10. Readiness Score
 
 ---
+## Project Structure:
+PrepCheck/
+├── backend/              # Node.js + Express API
+│   ├── server.js
+│   ├── routes/
+│   └── controllers/
+├── streamlit_app/        # Streamlit frontend (for prototyping or admin dashboard)
+│   └── app.py
+├── .gitignore
+├── README.md
+└── package.json          # For backend dependencies
 
+---
 ## Sample Output
 
 ```json
