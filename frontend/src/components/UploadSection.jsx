@@ -64,7 +64,7 @@ function UploadSection({ onUpload, loading, error }) {
         className="upload-header"
       >
         <h2>Analyse Your CV with AI</h2>
-        <p>Upload your resume and get instant insights, scores, and personalized recommendations</p>
+        <p>Upload your CV and get instant insights, scores, and personalised recommendations</p>
       </motion.div>
 
       <motion.div
