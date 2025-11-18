@@ -3,7 +3,7 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 // Initialize Gemini
 const genAI = new GoogleGenerativeAI({
   apiKey: process.env.GEMINI_API_KEY,
-  apiEndpoint: 'curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+  apiEndpoint: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
 });
 
 /**
