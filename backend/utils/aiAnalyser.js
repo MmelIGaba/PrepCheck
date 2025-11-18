@@ -191,4 +191,4 @@ Provide a helpful, concise, and encouraging response. Be specific and actionable
   }
 }
 
-module.exports = { analyzeCV, handleChat };
+module.exports = { analyseCV, handleChat };
