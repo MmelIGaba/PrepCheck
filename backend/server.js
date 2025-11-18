@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
 const { parseCV } = require('./utils/cvParser');
-const { analyzeCV } = require('./utils/aiAnalyzer');
+const { analyseCV } = require('./utils/aiAnalyser');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -33,7 +33,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // CV Upload and Analysis endpoint
-app.post('/api/analyze', upload.single('cv'), async (req, res) => {
+app.post('/api/analyse', upload.single('cv'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'No file uploaded' });
@@ -55,9 +55,9 @@ app.post('/api/analyze', upload.single('cv'), async (req, res) => {
     // Get optional questionnaire data
     const questionnaire = req.body.questionnaire ? JSON.parse(req.body.questionnaire) : {};
 
-    // Analyze with AI
+    // Analyse with AI
     console.log('🤖 Sending to AI for analysis...');
-    const analysis = await analyzeCV(cvText, questionnaire);
+    const analysis = await analyseCV(cvText, questionnaire);
     
     console.log('✨ Analysis complete!');
 
@@ -70,7 +70,7 @@ app.post('/api/analyze', upload.single('cv'), async (req, res) => {
   } catch (error) {
     console.error('❌ Error:', error.message);
     res.status(500).json({ 
-      error: 'Failed to analyze CV',
+      error: 'Failed to analyse CV',
       details: error.message 
     });
   }
@@ -86,7 +86,7 @@ app.post('/api/chat', async (req, res) => {
     }
 
     // Import chat handler
-    const { handleChat } = require('./utils/aiAnalyzer');
+    const { handleChat } = require('./utils/aiAnalyser');
     const response = await handleChat(message, context);
 
     res.json({ success: true, response });
