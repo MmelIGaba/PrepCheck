@@ -3,7 +3,7 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 // Initialize Gemini
 const genAI = new GoogleGenerativeAI({
   apiKey: process.env.GEMINI_API_KEY,
-  apiEndpoint: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+  apiEndpoint: "https://generativelanguage.googleapis.com/v1beta",
 });
 
 /**
@@ -106,9 +106,8 @@ CRITICAL: Return ONLY valid JSON in this exact format (no markdown, no explanati
 }`;
 
   try {
-    // Use Gemini 1.5 Flash (free and fast)
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-
+    // Use Gemini 2.0 Flash for analysis
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const responseText = response.text();
