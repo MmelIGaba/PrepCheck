@@ -11,7 +11,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
  */
 async function analyseCV(cvText, questionnaire = {}) {
   const prompt = `You are an expert career counselor and ATS (Applicant Tracking System) specialist. Analyse this CV/resume thoroughly and provide detailed feedback.
-
+ d
 Rate the CV across these 5 buckets (each out of 20 points):
 
 1. **CV Professionalism & Formatting** (/20)
