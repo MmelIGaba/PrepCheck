@@ -1,7 +1,10 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 // Initialize Gemini
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const genAI = new GoogleGenerativeAI({
+  apiKey: process.env.GEMINI_API_KEY,
+  apiEndpoint: 'curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+});
 
 /**
  * Analyze CV with Google Gemini AI and return structured scores
