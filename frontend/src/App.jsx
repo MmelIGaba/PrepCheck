@@ -13,12 +13,14 @@ function App() {
   const [darkMode, setDarkMode] = useState(true);
   const [currentView, setCurrentView] = useState('upload'); // 'upload' | 'results'
   const [analysisData, setAnalysisData] = useState(null);
+  const [uploadedFilename, setUploadedFilename] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const handleFileUpload = async (file) => {
     setLoading(true);
     setError(null);
+    setUploadedFilename(file.name);
 
     try {
       const formData = new FormData();
@@ -26,7 +28,7 @@ function App() {
 
       console.log('📤 Uploading CV...');
       
-      const response = await axios.post(`${API_URL}/api/analyse`, formData, {
+      const response = await axios.post(`${API_URL}/api/analyze`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -40,7 +42,7 @@ function App() {
 
     } catch (err) {
       console.error('❌ Upload error:', err);
-      setError(err.response?.data?.error || err.message || 'Failed to analyse CV');
+      setError(err.response?.data?.error || err.message || 'Failed to analyze CV');
     } finally {
       setLoading(false);
     }
@@ -101,6 +103,7 @@ function App() {
             >
               <ResultsDashboard 
                 data={analysisData}
+                filename={uploadedFilename}
                 onBack={handleBack}
               />
               <ChatAssistant 
