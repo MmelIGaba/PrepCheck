@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prepcheck-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prepcheck-frontend
+  template:
+    metadata:
+      labels:
+        app: prepcheck-frontend
+    spec:
+      containers:
+        - name: prepcheck-frontend
+          image: mmelidynatyi/prepcheck-frontend:latest
+          ports:
+            - containerPort: 80
+          imagePullPolicy: Always

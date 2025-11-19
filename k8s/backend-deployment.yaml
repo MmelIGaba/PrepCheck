@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prepcheck-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prepcheck-backend
+  template:
+    metadata:
+      labels:
+        app: prepcheck-backend
+    spec:
+      containers:
+        - name: prepcheck-backend
+          image: mmelidynatyi/prepcheck-backend:latest
+          ports:
+            - containerPort: 5000
+          env:
+            - name: NODE_ENV
+              value: production
+          imagePullPolicy: Always
