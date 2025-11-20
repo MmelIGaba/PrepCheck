@@ -1,31 +1,35 @@
-import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, X, Send, Loader } from 'lucide-react';
-import axios from 'axios';
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { MessageCircle, X, Send, Loader } from "lucide-react";
+import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 // Sound notification function
 const playNotificationSound = () => {
   try {
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const audioContext = new (window.AudioContext ||
+      window.webkitAudioContext)();
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
-    
+
     oscillator.connect(gainNode);
     gainNode.connect(audioContext.destination);
-    
+
     // Gentle, friendly notification sound
     oscillator.frequency.value = 800;
-    oscillator.type = 'sine';
-    
+    oscillator.type = "sine";
+
     gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-    
+    gainNode.gain.exponentialRampToValueAtTime(
+      0.01,
+      audioContext.currentTime + 0.3
+    );
+
     oscillator.start(audioContext.currentTime);
     oscillator.stop(audioContext.currentTime + 0.3);
   } catch (error) {
-    console.log('Audio notification not supported');
+    console.log("Audio notification not supported");
   }
 };
 
@@ -33,68 +37,75 @@ function ChatAssistant({ analysisContext, darkMode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
     {
-      role: 'assistant',
-      content: 'Hi! I\'m PrepPal, your career readiness assistant. Ask me anything about your CV analysis results! 🤖💼'
-    }
+      role: "assistant",
+      content:
+        "Hi! I'm PrepPal, your career readiness assistant. Ask me anything about your CV analysis results! 🤖💼",
+    },
   ]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
   const previousMessageCountRef = useRef(messages.length);
 
   // Auto-scroll to bottom when new messages arrive
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
     scrollToBottom();
-    
+
     // Play sound when PrepPal sends a new message
     if (messages.length > previousMessageCountRef.current) {
       const lastMessage = messages[messages.length - 1];
-      if (lastMessage.role === 'assistant') {
+      if (lastMessage.role === "assistant") {
         playNotificationSound();
       }
     }
-    
+
     previousMessageCountRef.current = messages.length;
   }, [messages]);
 
   const sendMessage = async () => {
     if (!input.trim() || loading) return;
 
-    const userMessage = { role: 'user', content: input };
-    setMessages(prev => [...prev, userMessage]);
-    setInput('');
+    const userMessage = { role: "user", content: input };
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
     setLoading(true);
 
     try {
+      // Send conversation history for context
+      const conversationHistory = messages.map((msg) => ({
+        role: msg.role,
+        content: msg.content,
+      }));
+
       const response = await axios.post(`${API_URL}/api/chat`, {
         message: input,
-        context: { analysis: analysisContext }
+        conversationHistory,
+        context: { analysis: analysisContext },
       });
 
       const assistantMessage = {
-        role: 'assistant',
-        content: response.data.response
+        role: "assistant",
+        content: response.data.response,
       };
-      setMessages(prev => [...prev, assistantMessage]);
-
+      setMessages((prev) => [...prev, assistantMessage]);
     } catch (error) {
-      console.error('Chat error:', error);
+      console.error("Chat error:", error);
       const errorMessage = {
-        role: 'assistant',
-        content: 'Sorry, I encountered an error. Please try again! 😊'
+        role: "assistant",
+        content: "Sorry, I encountered an error. Please try again!",
       };
-      setMessages(prev => [...prev, errorMessage]);
+      setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setLoading(false);
     }
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
     }
@@ -129,14 +140,14 @@ function ChatAssistant({ analysisContext, darkMode }) {
                 <div className="preppal-avatar">
                   <motion.span
                     className="robot-emoji"
-                    animate={{ 
+                    animate={{
                       rotate: [0, -10, 10, -10, 0],
-                      scale: [1, 1.1, 1]
+                      scale: [1, 1.1, 1],
                     }}
-                    transition={{ 
+                    transition={{
                       duration: 2,
                       repeat: Infinity,
-                      repeatDelay: 3
+                      repeatDelay: 3,
                     }}
                   >
                     🤖
@@ -144,11 +155,13 @@ function ChatAssistant({ analysisContext, darkMode }) {
                 </div>
                 <div>
                   <h4>PrepPal</h4>
-                  <span className="preppal-subtitle">Your Career Assistant</span>
+                  <span className="preppal-subtitle">
+                    Your Career Assistant
+                  </span>
                 </div>
               </div>
-              <button 
-                onClick={() => setIsOpen(false)} 
+              <button
+                onClick={() => setIsOpen(false)}
                 className="chat-close"
                 aria-label="Close chat"
               >
@@ -166,26 +179,27 @@ function ChatAssistant({ analysisContext, darkMode }) {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  {msg.role === 'assistant' && (
-                    <motion.div 
+                  {msg.role === "assistant" && (
+                    <motion.div
                       className="message-avatar"
-                      animate={{ 
-                        scale: loading && index === messages.length - 1 ? [1, 1.1, 1] : 1
+                      animate={{
+                        scale:
+                          loading && index === messages.length - 1
+                            ? [1, 1.1, 1]
+                            : 1,
                       }}
-                      transition={{ 
+                      transition={{
                         duration: 0.5,
-                        repeat: loading ? Infinity : 0
+                        repeat: loading ? Infinity : 0,
                       }}
                     >
                       🤖
                     </motion.div>
                   )}
-                  <div className="message-content">
-                    {msg.content}
-                  </div>
+                  <div className="message-content">{msg.content}</div>
                 </motion.div>
               ))}
-              
+
               {/* Typing Indicator */}
               {loading && (
                 <motion.div
@@ -196,7 +210,11 @@ function ChatAssistant({ analysisContext, darkMode }) {
                   <div className="message-avatar">
                     <motion.span
                       animate={{ rotate: [0, 360] }}
-                      transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
                     >
                       🤖
                     </motion.span>
@@ -208,7 +226,7 @@ function ChatAssistant({ analysisContext, darkMode }) {
                   </div>
                 </motion.div>
               )}
-              
+
               <div ref={messagesEndRef} />
             </div>
 

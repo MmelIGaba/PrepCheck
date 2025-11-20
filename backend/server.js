@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
 const { parseCV } = require('./utils/cvParser');
-const { analyseCV } = require('./utils/aiAnalyser');
+const { analyseCV } = require('./utils/aiAnalyser'); 
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -32,7 +32,7 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Server is running!' });
 });
 
-// CV Upload and Analysis endpoint
+// CV Upload and Analysis endpoint 
 app.post('/api/analyse', upload.single('cv'), async (req, res) => {
   try {
     if (!req.file) {
@@ -69,6 +69,16 @@ app.post('/api/analyse', upload.single('cv'), async (req, res) => {
 
   } catch (error) {
     console.error('❌ Error:', error.message);
+    
+    // Check if it's a CV validation error
+    if (error.message.includes('not appear to be a CV') || 
+        error.message.includes('not a resume')) {
+      return res.status(400).json({ 
+        error: error.message,
+        type: 'invalid_cv'
+      });
+    }
+    
     res.status(500).json({ 
       error: 'Failed to analyse CV',
       details: error.message 
@@ -79,7 +89,7 @@ app.post('/api/analyse', upload.single('cv'), async (req, res) => {
 // Chat endpoint (bonus feature)
 app.post('/api/chat', async (req, res) => {
   try {
-    const { message, context } = req.body;
+    const { message, conversationHistory, context } = req.body;
     
     if (!message) {
       return res.status(400).json({ error: 'Message is required' });
@@ -87,7 +97,7 @@ app.post('/api/chat', async (req, res) => {
 
     // Import chat handler
     const { handleChat } = require('./utils/aiAnalyser');
-    const response = await handleChat(message, context);
+    const response = await handleChat(message, conversationHistory, context);
 
     res.json({ success: true, response });
 

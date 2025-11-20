@@ -1,6 +1,6 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-// Initialize Gemini
+// Initialise Gemini
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 /**
@@ -40,22 +40,23 @@ Return ONLY a JSON object:
     const result = await model.generateContent(validationPrompt);
     const response = await result.response;
     const responseText = response.text();
-    
+
     // Clean and parse response
-    let cleanedText = responseText.trim()
-      .replace(/```json\n?/g, '')
-      .replace(/```\n?/g, '');
-    
+    let cleanedText = responseText
+      .trim()
+      .replace(/```json\n?/g, "")
+      .replace(/```\n?/g, "");
+
     const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
       cleanedText = jsonMatch[0];
     }
-    
+
     return JSON.parse(cleanedText);
   } catch (error) {
-    console.error('CV validation error:', error);
+    console.error("CV validation error:", error);
     // If validation fails, assume it's a CV to avoid blocking legitimate uploads
-    return { isCV: true, confidence: 'low', reason: 'Validation inconclusive' };
+    return { isCV: true, confidence: "low", reason: "Validation inconclusive" };
   }
 }
 
@@ -67,15 +68,17 @@ Return ONLY a JSON object:
  */
 async function analyseCV(cvText, questionnaire = {}) {
   // First, validate if this is actually a CV
-  console.log('🔍 Validating if document is a CV...');
+  console.log("🔍 Validating if document is a CV...");
   const validation = await validateCV(cvText);
-  
-  console.log('Validation result:', validation);
-  
-  if (!validation.isCV && validation.confidence !== 'low') {
-    throw new Error(`This doesn't appear to be a CV or resume. ${validation.reason}. Please upload a proper CV/Resume document.`);
+
+  console.log("Validation result:", validation);
+
+  if (!validation.isCV && validation.confidence !== "low") {
+    throw new Error(
+      `This doesn't appear to be a CV or resume. ${validation.reason}. Please upload a proper CV/Resume document.`
+    );
   }
-  
+
   const prompt = `You are an expert career counsellor and ATS (Applicant Tracking System) specialist. Analyse this CV/resume thoroughly and provide detailed feedback.
 
 CRITICAL: This MUST be a CV/Resume. If the document does not appear to be a CV/Resume (e.g., it's a random text file, article, or other document), respond with:
@@ -129,7 +132,11 @@ Also provide:
 CV CONTENT:
 ${cvText}
 
-${Object.keys(questionnaire).length > 0 ? `ADDITIONAL CONTEXT:\n${JSON.stringify(questionnaire, null, 2)}` : ''}
+${
+  Object.keys(questionnaire).length > 0
+    ? `ADDITIONAL CONTEXT:\n${JSON.stringify(questionnaire, null, 2)}`
+    : ""
+}
 
 CRITICAL: Return ONLY valid JSON in this exact format (no markdown, no explanations, no code blocks):
 {
@@ -175,81 +182,99 @@ CRITICAL: Return ONLY valid JSON in this exact format (no markdown, no explanati
 }`;
 
   try {
-    // Use Gemini 2.0 Flash for analysis
+    // Use Gemini 1.5 Flash for analysis
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-    
+
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const responseText = response.text();
-    
-    console.log('Raw Gemini response length:', responseText.length);
+
+    console.log("Raw Gemini response length:", responseText.length);
 
     // Try to parse JSON response
     let analysis;
     try {
       // Remove any markdown formatting if present
       let cleanedText = responseText.trim();
-      
+
       // Remove markdown code blocks
-      cleanedText = cleanedText.replace(/```json\n?/g, '').replace(/```\n?/g, '');
-      
+      cleanedText = cleanedText
+        .replace(/```json\n?/g, "")
+        .replace(/```\n?/g, "");
+
       // Try to find JSON object
       const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         cleanedText = jsonMatch[0];
       }
-      
+
       analysis = JSON.parse(cleanedText);
-      
+
       // Check if AI detected this isn't a CV
-      if (analysis.error === 'not_a_cv') {
-        throw new Error(analysis.message || 'This document does not appear to be a CV or resume.');
+      if (analysis.error === "not_a_cv") {
+        throw new Error(
+          analysis.message ||
+            "This document does not appear to be a CV or resume."
+        );
       }
-      
     } catch (parseError) {
-      console.error('Failed to parse Gemini response:', parseError);
-      console.log('Raw response:', responseText.substring(0, 500));
-      
+      console.error("Failed to parse Gemini response:", parseError);
+      console.log("Raw response:", responseText.substring(0, 500));
+
       // Check if response contains "not a CV" message
-      if (responseText.toLowerCase().includes('not a cv') || 
-          responseText.toLowerCase().includes('not a resume')) {
-        throw new Error('This document does not appear to be a CV or resume. Please upload a proper CV/Resume document.');
+      if (
+        responseText.toLowerCase().includes("not a cv") ||
+        responseText.toLowerCase().includes("not a resume")
+      ) {
+        throw new Error(
+          "This document does not appear to be a CV or resume. Please upload a proper CV/Resume document."
+        );
       }
-      
-      throw new Error('AI returned invalid format. Please try again.');
+
+      throw new Error("AI returned invalid format. Please try again.");
     }
 
     // Validate structure
     if (!analysis.buckets || !Array.isArray(analysis.buckets)) {
-      throw new Error('Invalid analysis structure');
+      throw new Error("Invalid analysis structure");
     }
 
     // Ensure all scores are numbers
-    analysis.buckets = analysis.buckets.map(bucket => ({
+    analysis.buckets = analysis.buckets.map((bucket) => ({
       ...bucket,
-      score: typeof bucket.score === 'number' ? bucket.score : parseInt(bucket.score) || 0
+      score:
+        typeof bucket.score === "number"
+          ? bucket.score
+          : parseInt(bucket.score) || 0,
     }));
 
     // Recalculate overall score to be sure
-    const totalScore = analysis.buckets.reduce((sum, bucket) => sum + bucket.score, 0);
+    const totalScore = analysis.buckets.reduce(
+      (sum, bucket) => sum + bucket.score,
+      0
+    );
     analysis.overall_score = totalScore;
 
     return analysis;
-
   } catch (error) {
-    console.error('Gemini Analysis error:', error);
-    
+    console.error("Gemini Analysis error:", error);
+
     // More helpful error messages
-    if (error.message?.includes('API key')) {
-      throw new Error('Invalid Gemini API key. Please check your .env file.');
+    if (error.message?.includes("API key")) {
+      throw new Error("Invalid Gemini API key. Please check your .env file.");
     }
-    if (error.message?.includes('quota')) {
-      throw new Error('API quota exceeded. Please try again later or check your Gemini quota.');
+    if (error.message?.includes("quota")) {
+      throw new Error(
+        "API quota exceeded. Please try again later or check your Gemini quota."
+      );
     }
-    if (error.message?.includes('not a CV') || error.message?.includes('not a resume')) {
+    if (
+      error.message?.includes("not a CV") ||
+      error.message?.includes("not a resume")
+    ) {
       throw error; // Pass through CV validation errors
     }
-    
+
     throw new Error(`AI analysis failed: ${error.message}`);
   }
 }
@@ -257,22 +282,46 @@ CRITICAL: Return ONLY valid JSON in this exact format (no markdown, no explanati
 /**
  * Handle chat messages with context using Gemini
  */
-async function handleChat(message, context = {}) {
-  const prompt = `You are PrepPal, a helpful and encouraging career counsellor assistant. The user has just received CV analysis feedback and has a question.
+async function handleChat(message, conversationHistory = [], context = {}) {
+  // Build conversation context
+  let conversationContext = "";
+  if (conversationHistory && conversationHistory.length > 1) {
+    conversationContext = "\nPREVIOUS CONVERSATION:\n";
+    conversationHistory.slice(0, -1).forEach((msg) => {
+      conversationContext += `${msg.role === "user" ? "User" : "PrepPal"}: ${
+        msg.content
+      }\n`;
+    });
+  }
+
+  const prompt = `You are PrepPal, a helpful and encouraging career counsellor assistant. You are having an ongoing conversation with a user about their CV analysis.
+
+IMPORTANT CONVERSATION RULES:
+- This is a CONTINUING conversation, not a new one each time
+- Do NOT greet the user on every message (only greet once at start of conversation)
+- If user says "thank you", respond briefly: "You're welcome! Let me know if you need anything else."
+- Keep responses concise and natural, like a real conversation
+- Use emojis VERY sparingly (max 1 per response, and only when appropriate)
+- Avoid repetitive phrases
 
 Your personality:
-- Friendly and approachable, like a supportive friend
-- Professional but not stuffy
-- Use British English spelling (e.g., "analyse" not "analyze", "colour" not "color")
-- Use occasional emojis sparingly (💼 ✨ 🎯 💪 🤖)
-- Keep responses conversational and warm
-- Always be encouraging and constructive
+- Friendly and conversational
+- Professional but approachable
+- Use British English spelling (analyse, colour, etc.)
+- Be helpful and specific
+- Keep responses under 150 words unless asked for detailed explanation
 
-${context.analysis ? `PREVIOUS CV ANALYSIS:\n${JSON.stringify(context.analysis, null, 2)}\n` : ''}
+${conversationContext}
 
-USER QUESTION: ${message}
+${
+  context.analysis
+    ? `CV ANALYSIS CONTEXT:\n${JSON.stringify(context.analysis, null, 2)}\n`
+    : ""
+}
 
-Provide a helpful, concise, and encouraging response. Be specific and actionable. Keep your response under 200 words.`;
+CURRENT USER MESSAGE: ${message}
+
+Respond naturally as if continuing a conversation. Be concise and helpful.`;
 
   try {
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
@@ -280,9 +329,8 @@ Provide a helpful, concise, and encouraging response. Be specific and actionable
     const result = await model.generateContent(prompt);
     const response = await result.response;
     return response.text();
-
   } catch (error) {
-    console.error('PrepPal Chat error:', error);
+    console.error("PrepPal Chat error:", error);
     throw new Error(`Chat failed: ${error.message}`);
   }
 }
