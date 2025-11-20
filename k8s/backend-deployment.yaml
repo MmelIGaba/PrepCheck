@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: prepcheck-backend
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: prepcheck-backend
@@ -14,10 +14,38 @@ spec:
     spec:
       containers:
         - name: prepcheck-backend
-          image: mmelidynatyi/prepcheck-backend:latest
+          image: mmeligab/prepcheck-backend:latest   # <-- corrected
+          imagePullPolicy: IfNotPresent              # <-- use local image loaded into Minikube
           ports:
             - containerPort: 5000
           env:
             - name: NODE_ENV
               value: production
-          imagePullPolicy: Always
+            - name: GEMINI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: prepcheck-secrets
+                  key: GEMINI_API_KEY
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          securityContext:
+            runAsNonRoot: false
+            allowPrivilegeEscalation: false
+      restartPolicy: Always

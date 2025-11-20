@@ -14,7 +14,34 @@ spec:
     spec:
       containers:
         - name: prepcheck-frontend
-          image: mmelidynatyi/prepcheck-frontend:latest
+          image: mmeligab/prepcheck-frontend:latest
+          imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 80
-          imagePullPolicy: Always
+            - containerPort: 5173   # match Vite
+          env:
+            - name: VITE_API_URL
+              value: "http://prepcheck-backend.default.svc.cluster.local:5000"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5173
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 5173
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          securityContext:
+            runAsNonRoot: false
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+      restartPolicy: Always

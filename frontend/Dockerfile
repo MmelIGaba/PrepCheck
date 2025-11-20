@@ -1,23 +1,15 @@
-# Build the React app
-<<<<<<< Updated upstream
-FROM node:18-alpine AS builder
-=======
-FROM node:22-alpine AS builder
-RUN npm rebuild esbuild
+FROM node:22-bullseye AS builder
 
->>>>>>> Stashed changes
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
+RUN npm uninstall esbuild && npm install esbuild
 COPY . .
+
+# Build the app
 RUN npm run build
 
-# Serve the static files
-FROM nginx:alpine
-COPY --from=builder /app/dist /usr/share/nginx/html
+EXPOSE 5173
 
-# Optional: Custom Nginx config (if needed)
-# COPY nginx.conf /etc/nginx/nginx.conf
-
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# Run preview server from /app/dist
+CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0", "--port", "5173"]

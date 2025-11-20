@@ -3,10 +3,9 @@ kind: Service
 metadata:
   name: prepcheck-frontend
 spec:
+  type: ClusterIP
   selector:
     app: prepcheck-frontend
   ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 80
-  type: ClusterIP
+    - port: 80          # ingress expects 80
+      targetPort: 5173  # forward to Vite
