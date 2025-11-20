@@ -57,10 +57,12 @@ function App() {
     } catch (err) {
       console.error("❌ Upload error:", err);
       setError(
-        err.response?.data?.error ||
+        err.response?.data?.message ||
+          err.response?.data?.error ||
           err.message ||
-          "Unable to process this document. Please upload a valid CV in PDF or Word format."
+          "Unable to process this document. Please upload a valid CV/Resume in PDF or Word format."
       );
+
     } finally {
       setLoading(false);
     }

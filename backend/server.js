@@ -68,23 +68,29 @@ app.post('/api/analyse', upload.single('cv'), async (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ Error:', error.message);
-    
-    // Check if it's a CV validation error
-    if (error.message.includes('not appear to be a CV') || 
-        error.message.includes('not a resume')) {
-      return res.status(400).json({ 
-        error: error.message,
-        type: 'invalid_cv'
-      });
-    }
-    
-    res.status(500).json({ 
-      error: 'Failed to analyse CV',
-      details: error.message 
+  console.error('❌ Error:', error.message);
+
+  // If parsing or validation fails
+  if (
+    error.message.includes('not recognized as a CV') ||
+    error.message.includes('Failed to parse') ||
+    error.message.includes('Could not extract') ||
+    error.message.includes('not a resume')
+  ) {
+    return res.status(400).json({
+      success: false,
+      message: error.message, // Use "message" instead of "error"
+      type: "invalid_cv",
     });
   }
-});
+
+  // For actual server errors
+  return res.status(500).json({
+    success: false,
+    message: "Internal server error while analysing CV",
+    details: error.message,
+  });
+}
 
 // Chat endpoint (bonus feature)
 app.post('/api/chat', async (req, res) => {
@@ -123,4 +129,4 @@ app.use((error, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
   console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
-});
+})});

@@ -133,7 +133,7 @@ function UploadSection({ onUpload, loading, error }) {
         )}
 
         <button
-          className="analyze-btn"
+          className="analyse-btn"
           onClick={handleSubmit}
           disabled={!selectedFile || loading}
         >
