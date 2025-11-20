@@ -38,7 +38,7 @@ function ResultsDashboard({ data, onBack, filename = 'CV' }) {
       <div className="results-header">
         <button onClick={onBack} className="back-btn">
           <ArrowLeft size={20} />
-          Analyze Another CV
+          Analyse Another CV
         </button>
         
         <button className="download-btn" onClick={handleDownloadPDF}>
