@@ -10,7 +10,12 @@ import './styles/App.css';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 function App() {
-  const [darkMode, setDarkMode] = useState(true);
+  // Detect system theme preference
+  const [darkMode, setDarkMode] = useState(() => {
+    // Check if user prefers dark mode
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
+  
   const [currentView, setCurrentView] = useState('upload'); // 'upload' | 'results'
   const [analysisData, setAnalysisData] = useState(null);
   const [uploadedFilename, setUploadedFilename] = useState('');
