@@ -28,7 +28,7 @@ function App() {
 
       console.log('📤 Uploading CV...');
       
-      const response = await axios.post(`${API_URL}/api/analyze`, formData, {
+      const response = await axios.post(`${API_URL}/api/analyse`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -42,7 +42,7 @@ function App() {
 
     } catch (err) {
       console.error('❌ Upload error:', err);
-      setError(err.response?.data?.error || err.message || 'Failed to analyze CV');
+      setError(err.response?.data?.error || err.message || 'Failed to analyse CV');
     } finally {
       setLoading(false);
     }
