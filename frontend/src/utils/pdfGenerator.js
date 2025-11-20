@@ -24,11 +24,9 @@ export const generatePDFReport = (analysisData, filename = 'CV') => {
   // Title
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(24);
-  doc.setFont('helvetica', 'bold');
   doc.text('PrepCheck', 105, 20, { align: 'center' });
   
   doc.setFontSize(14);
-  doc.setFont('helvetica', 'normal');
   doc.text('Career Readiness Analysis Report', 105, 30, { align: 'center' });
   
   yPos = 50;
