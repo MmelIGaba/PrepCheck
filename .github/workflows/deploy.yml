@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "main" ]
   workflow_dispatch:
-
+    
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -16,13 +16,13 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '22' # for frontend compatibility
 
-      - name: Install dependencies (backend)
+      - name: Install backend dependencies
         run: npm ci --omit=dev
         working-directory: ./backend
 
-      - name: Run tests (optional)
+      - name: Run backend tests
         run: npm test
         working-directory: ./backend
         continue-on-error: true
@@ -36,12 +36,20 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and push image
+      - name: Build and push backend image
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: ./Dockerfile
+          context: ./backend
+          file: ./backend/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/prepcheck:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/prepcheck-backend:latest
           build-args: |
             NODE_ENV=production
+
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/prepcheck-frontend:latest

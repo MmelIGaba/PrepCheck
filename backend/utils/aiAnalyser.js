@@ -1,4 +1,9 @@
+<<<<<<< Updated upstream
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+=======
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+require("dotenv").config();
+>>>>>>> Stashed changes
 
 // Initialize Gemini
 const genAI = new GoogleGenerativeAI({

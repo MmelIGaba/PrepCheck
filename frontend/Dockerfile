@@ -1,5 +1,11 @@
 # Build the React app
+<<<<<<< Updated upstream
 FROM node:18-alpine AS builder
+=======
+FROM node:22-alpine AS builder
+RUN npm rebuild esbuild
+
+>>>>>>> Stashed changes
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
