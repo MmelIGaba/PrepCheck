@@ -15,11 +15,13 @@ async function parseCV(file) {
     } else if (mimeType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
       return await parseDOCX(file.buffer);
     } else {
-      throw new Error('Unsupported file type');
+      throw new Error(
+  'This document is not recognized as a CV/Resume. Please upload a valid CV/Resume in PDF or Word format.'
+);
     }
   } catch (error) {
     console.error('Parse error:', error);
-    throw new Error(`Failed to parse CV: ${error.message}`);
+    throw new Error(error.message);
   }
 }
 

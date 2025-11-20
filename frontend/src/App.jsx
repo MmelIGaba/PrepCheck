@@ -57,7 +57,9 @@ function App() {
     } catch (err) {
       console.error("❌ Upload error:", err);
       setError(
-        err.response?.data?.error || err.message || "Failed to analyse CV"
+        err.response?.data?.error ||
+          err.message ||
+          "Unable to process this document. Please upload a valid CV in PDF or Word format."
       );
     } finally {
       setLoading(false);
