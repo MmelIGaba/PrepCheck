@@ -1,15 +1,8 @@
-<<<<<<< Updated upstream
-const { GoogleGenerativeAI } = require('@google/generative-ai');
-=======
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 require("dotenv").config();
->>>>>>> Stashed changes
 
 // Initialize Gemini
-const genAI = new GoogleGenerativeAI({
-  apiKey: process.env.GEMINI_API_KEY,
-  apiEndpoint: "https://generativelanguage.googleapis.com/v1beta",
-});
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 /**
  * Analyze CV with Google Gemini AI and return structured scores
@@ -17,9 +10,9 @@ const genAI = new GoogleGenerativeAI({
  * @param {Object} questionnaire - Optional user responses
  * @returns {Promise<Object>} - Analysis results
  */
+
 async function analyseCV(cvText, questionnaire = {}) {
   const prompt = `You are an expert career counselor and ATS (Applicant Tracking System) specialist. Analyse this CV/resume thoroughly and provide detailed feedback.
- d
 Rate the CV across these 5 buckets (each out of 20 points):
 
 1. **CV Professionalism & Formatting** (/20)
@@ -65,7 +58,11 @@ Also provide:
 CV CONTENT:
 ${cvText}
 
-${Object.keys(questionnaire).length > 0 ? `ADDITIONAL CONTEXT:\n${JSON.stringify(questionnaire, null, 2)}` : ''}
+${
+  Object.keys(questionnaire).length > 0
+    ? `ADDITIONAL CONTEXT:\n${JSON.stringify(questionnaire, null, 2)}`
+    : ""
+}
 
 CRITICAL: Return ONLY valid JSON in this exact format (no markdown, no explanations, no code blocks):
 {
@@ -116,59 +113,68 @@ CRITICAL: Return ONLY valid JSON in this exact format (no markdown, no explanati
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const responseText = response.text();
-    
-    console.log('Raw Gemini response length:', responseText.length);
+
+    console.log("Raw Gemini response length:", responseText.length);
 
     // Try to parse JSON response
     let analysis;
     try {
       // Remove any markdown formatting if present
       let cleanedText = responseText.trim();
-      
+
       // Remove markdown code blocks
-      cleanedText = cleanedText.replace(/```json\n?/g, '').replace(/```\n?/g, '');
-      
+      cleanedText = cleanedText
+        .replace(/```json\n?/g, "")
+        .replace(/```\n?/g, "");
+
       // Try to find JSON object
       const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         cleanedText = jsonMatch[0];
       }
-      
+
       analysis = JSON.parse(cleanedText);
     } catch (parseError) {
-      console.error('Failed to parse Gemini response:', parseError);
-      console.log('Raw response:', responseText.substring(0, 500));
-      throw new Error('AI returned invalid format. Please try again.');
+      console.error("Failed to parse Gemini response:", parseError);
+      console.log("Raw response:", responseText.substring(0, 500));
+      throw new Error("AI returned invalid format. Please try again.");
     }
 
     // Validate structure
     if (!analysis.buckets || !Array.isArray(analysis.buckets)) {
-      throw new Error('Invalid analysis structure');
+      throw new Error("Invalid analysis structure");
     }
 
     // Ensure all scores are numbers
-    analysis.buckets = analysis.buckets.map(bucket => ({
+    analysis.buckets = analysis.buckets.map((bucket) => ({
       ...bucket,
-      score: typeof bucket.score === 'number' ? bucket.score : parseInt(bucket.score) || 0
+      score:
+        typeof bucket.score === "number"
+          ? bucket.score
+          : parseInt(bucket.score) || 0,
     }));
 
     // Recalculate overall score to be sure
-    const totalScore = analysis.buckets.reduce((sum, bucket) => sum + bucket.score, 0);
+    const totalScore = analysis.buckets.reduce(
+      (sum, bucket) => sum + bucket.score,
+      0
+    );
     analysis.overall_score = totalScore;
 
     return analysis;
-
   } catch (error) {
-    console.error('Gemini Analysis error:', error);
-    
+    console.error("Gemini Analysis error:", error);
+
     // More helpful error messages
-    if (error.message?.includes('API key')) {
-      throw new Error('Invalid Gemini API key. Please check your .env file.');
+    if (error.message?.includes("API key")) {
+      throw new Error("Invalid Gemini API key. Please check your .env file.");
     }
-    if (error.message?.includes('quota')) {
-      throw new Error('API quota exceeded. Please try again later or check your Gemini quota.');
+    if (error.message?.includes("quota")) {
+      throw new Error(
+        "API quota exceeded. Please try again later or check your Gemini quota."
+      );
     }
-    
+
     throw new Error(`AI analysis failed: ${error.message}`);
   }
 }
@@ -179,21 +185,23 @@ CRITICAL: Return ONLY valid JSON in this exact format (no markdown, no explanati
 async function handleChat(message, context = {}) {
   const prompt = `You are a helpful career counselor assistant. The user has just received CV analysis feedback and has a question.
 
-${context.analysis ? `PREVIOUS CV ANALYSIS:\n${JSON.stringify(context.analysis, null, 2)}\n` : ''}
+${
+  context.analysis
+    ? `PREVIOUS CV ANALYSIS:\n${JSON.stringify(context.analysis, null, 2)}\n`
+    : ""
+}
 
 USER QUESTION: ${message}
 
 Provide a helpful, concise, and encouraging response. Be specific and actionable. Keep your response under 200 words.`;
 
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
     const result = await model.generateContent(prompt);
     const response = await result.response;
     return response.text();
-
   } catch (error) {
-    console.error('Gemini Chat error:', error);
+    console.error("Gemini Chat error:", error);
     throw new Error(`Chat failed: ${error.message}`);
   }
 }

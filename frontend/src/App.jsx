@@ -13,12 +13,14 @@ function App() {
   const [darkMode, setDarkMode] = useState(true);
   const [currentView, setCurrentView] = useState('upload'); // 'upload' | 'results'
   const [analysisData, setAnalysisData] = useState(null);
+  const [uploadedFilename, setUploadedFilename] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const handleFileUpload = async (file) => {
     setLoading(true);
     setError(null);
+    setUploadedFilename(file.name);
 
     try {
       const formData = new FormData();
@@ -101,6 +103,7 @@ function App() {
             >
               <ResultsDashboard 
                 data={analysisData}
+                filename={uploadedFilename}
                 onBack={handleBack}
               />
               <ChatAssistant 
