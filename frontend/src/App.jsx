@@ -1,34 +1,24 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  Upload,
-  Moon,
-  Sun,
-  FileText,
-  TrendingUp,
-  Sparkles,
-} from "lucide-react";
-import axios from "axios";
-import UploadSection from "./components/UploadSection";
-import ResultsDashboard from "./components/ResultsDashboard";
-import ChatAssistant from "./components/ChatAssistant";
-import "./styles/App.css";
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Upload, Moon, Sun, FileText, TrendingUp, Sparkles } from 'lucide-react';
+import axios from 'axios';
+import UploadSection from './components/UploadSection';
+import ResultsDashboard from './components/ResultsDashboard';
+import ChatAssistant from './components/ChatAssistant';
+import './styles/App.css';
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 function App() {
   // Detect system theme preference
   const [darkMode, setDarkMode] = useState(() => {
     // Check if user prefers dark mode
-    return (
-      window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-    );
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
-
-  const [currentView, setCurrentView] = useState("upload"); // 'upload' | 'results'
+  
+  const [currentView, setCurrentView] = useState('upload'); // 'upload' | 'results'
   const [analysisData, setAnalysisData] = useState(null);
-  const [uploadedFilename, setUploadedFilename] = useState("");
+  const [uploadedFilename, setUploadedFilename] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -39,43 +29,38 @@ function App() {
 
     try {
       const formData = new FormData();
-      formData.append("cv", file);
+      formData.append('cv', file);
 
-      console.log("📤 Uploading CV...");
-
+      console.log('📤 Uploading CV...');
+      
       const response = await axios.post(`${API_URL}/api/analyse`, formData, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          'Content-Type': 'multipart/form-data',
         },
         timeout: 60000, // 60 second timeout
       });
 
-      console.log("✅ Analysis received!", response.data);
-
+      console.log('✅ Analysis received!', response.data);
+      
       setAnalysisData(response.data.analysis);
-      setCurrentView("results");
-    } catch (err) {
-      console.error("❌ Upload error:", err);
-      setError(
-        err.response?.data?.message ||
-          err.response?.data?.error ||
-          err.message ||
-          "Unable to process this document. Please upload a valid CV/Resume in PDF or Word format."
-      );
+      setCurrentView('results');
 
+    } catch (err) {
+      console.error('❌ Upload error:', err);
+      setError(err.response?.data?.error || err.message || 'Unable to process this document. Please upload a valid CV/Resume in PDF or Word format');
     } finally {
       setLoading(false);
     }
   };
 
   const handleBack = () => {
-    setCurrentView("upload");
+    setCurrentView('upload');
     setAnalysisData(null);
     setError(null);
   };
 
   return (
-    <div className={`app ${darkMode ? "dark" : "light"}`}>
+    <div className={`app ${darkMode ? 'dark' : 'light'}`}>
       {/* Header */}
       <header className="app-header">
         <div className="header-content">
@@ -83,8 +68,8 @@ function App() {
             <Sparkles className="logo-icon" />
             <h1>PrepCheck</h1>
           </div>
-
-          <button
+          
+          <button 
             className="theme-toggle"
             onClick={() => setDarkMode(!darkMode)}
             aria-label="Toggle theme"
@@ -97,7 +82,7 @@ function App() {
       {/* Main Content */}
       <main className="main-content">
         <AnimatePresence mode="wait">
-          {currentView === "upload" && (
+          {currentView === 'upload' && (
             <motion.div
               key="upload"
               initial={{ opacity: 0, y: 20 }}
@@ -105,7 +90,7 @@ function App() {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
-              <UploadSection
+              <UploadSection 
                 onUpload={handleFileUpload}
                 loading={loading}
                 error={error}
@@ -113,7 +98,7 @@ function App() {
             </motion.div>
           )}
 
-          {currentView === "results" && analysisData && (
+          {currentView === 'results' && analysisData && (
             <motion.div
               key="results"
               initial={{ opacity: 0, y: 20 }}
@@ -121,12 +106,12 @@ function App() {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
-              <ResultsDashboard
+              <ResultsDashboard 
                 data={analysisData}
                 filename={uploadedFilename}
                 onBack={handleBack}
               />
-              <ChatAssistant
+              <ChatAssistant 
                 analysisContext={analysisData}
                 darkMode={darkMode}
               />
@@ -137,7 +122,7 @@ function App() {
 
       {/* Footer */}
       <footer className="app-footer">
-        <p>Created by CloudCTRL • Built for job seekers</p>
+        <p>Powered by AI • Built for job seekers</p>
       </footer>
     </div>
   );

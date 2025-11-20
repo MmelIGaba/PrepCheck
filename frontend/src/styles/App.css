@@ -321,7 +321,7 @@ body {
   background: rgba(59, 130, 246, 0.1);
 }
 
-.analyze-btn {
+.analyse-btn {
   width: 100%;
   padding: 1rem 2rem;
   border-radius: 12px;
@@ -339,17 +339,17 @@ body {
   box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
 }
 
-.dark .analyze-btn {
+.dark .analyse-btn {
   background: linear-gradient(135deg, var(--dark-blue-600), var(--dark-purple-600));
   box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
 }
 
-.analyze-btn:hover:not(:disabled) {
+.analyse-btn:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 15px 40px rgba(59, 130, 246, 0.4);
 }
 
-.analyze-btn:disabled {
+.analyse-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
