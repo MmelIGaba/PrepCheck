@@ -21,7 +21,7 @@ export const generatePDFReport = (analysisData, filename = 'CV') => {
   doc.setFillColor(...primaryBlue);
   doc.rect(0, 0, 210, 40, 'F');
   
-  // Title
+  // Title - SIMPLIFIED
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(24);
   doc.text('PrepCheck', 105, 20, { align: 'center' });
@@ -34,7 +34,6 @@ export const generatePDFReport = (analysisData, filename = 'CV') => {
   // ==================== OVERALL SCORE ====================
   doc.setTextColor(...darkGray);
   doc.setFontSize(18);
-  doc.setFont('helvetica', 'bold');
   doc.text('Overall Readiness Score', 20, yPos);
   
   yPos += 10;
@@ -43,14 +42,13 @@ export const generatePDFReport = (analysisData, filename = 'CV') => {
   doc.setFillColor(240, 240, 255);
   doc.circle(105, yPos + 15, 20, 'F');
   
-  // Score number
+  // Score number 
   doc.setFontSize(32);
-  doc.setFont('helvetica', 'bold');
   const scoreColor = analysisData.overall_score >= 85 ? success : 
                      analysisData.overall_score >= 70 ? primaryBlue : 
                      [245, 158, 11];
   doc.setTextColor(...scoreColor);
-  doc.text(`${analysisData.overall_score}`, 105, yPos + 20, { align: 'center' });
+  doc.text(String(analysisData.overall_score), 105, yPos + 20, { align: 'center' });
   
   doc.setFontSize(12);
   doc.setTextColor(...lightGray);
@@ -64,7 +62,6 @@ export const generatePDFReport = (analysisData, filename = 'CV') => {
                  analysisData.overall_score >= 50 ? 'Fair' : 'Needs Work';
   
   doc.setFontSize(14);
-  doc.setFont('helvetica', 'bold');
   doc.setTextColor(...scoreColor);
   doc.text(rating, 105, yPos, { align: 'center' });
   
@@ -72,7 +69,6 @@ export const generatePDFReport = (analysisData, filename = 'CV') => {
   
   // Summary
   doc.setFontSize(11);
-  doc.setFont('helvetica', 'normal');
   doc.setTextColor(...darkGray);
   const summaryLines = doc.splitTextToSize(analysisData.summary, 170);
   doc.text(summaryLines, 20, yPos);
@@ -81,7 +77,6 @@ export const generatePDFReport = (analysisData, filename = 'CV') => {
   
   // ==================== BUCKET SCORES ====================
   doc.setFontSize(16);
-  doc.setFont('helvetica', 'bold');
   doc.setTextColor(...darkGray);
   doc.text('Detailed Analysis', 20, yPos);
   
@@ -94,14 +89,13 @@ export const generatePDFReport = (analysisData, filename = 'CV') => {
       yPos = 20;
     }
     
-    // Bucket name and score
+    // Bucket name and score 
     doc.setFontSize(12);
-    doc.setFont('helvetica', 'bold');
     doc.setTextColor(...darkGray);
     doc.text(bucket.name, 20, yPos);
     
     doc.setTextColor(...primaryBlue);
-    doc.text(`${bucket.score}/20`, 180, yPos);
+    doc.text(bucket.score + '/20', 180, yPos);
     
     yPos += 6;
     
@@ -122,16 +116,14 @@ export const generatePDFReport = (analysisData, filename = 'CV') => {
     // Strengths
     if (bucket.strengths && bucket.strengths.length > 0) {
       doc.setFontSize(10);
-      doc.setFont('helvetica', 'bold');
       doc.setTextColor(...success);
-      doc.text('✓ Strengths', 25, yPos);
+      doc.text('Strengths:', 25, yPos);
       
       yPos += 5;
       
-      doc.setFont('helvetica', 'normal');
       doc.setTextColor(...darkGray);
       bucket.strengths.forEach(strength => {
-        const lines = doc.splitTextToSize(`• ${strength}`, 160);
+        const lines = doc.splitTextToSize('- ' + strength, 160);
         doc.text(lines, 30, yPos);
         yPos += lines.length * 5;
       });
@@ -139,19 +131,17 @@ export const generatePDFReport = (analysisData, filename = 'CV') => {
       yPos += 2;
     }
     
-    // Recommendations
+    // Recommendations 
     if (bucket.recommendations && bucket.recommendations.length > 0) {
       doc.setFontSize(10);
-      doc.setFont('helvetica', 'bold');
       doc.setTextColor(...primaryBlue);
-      doc.text('→ Recommendations', 25, yPos);
+      doc.text('Recommendations:', 25, yPos);
       
       yPos += 5;
       
-      doc.setFont('helvetica', 'normal');
       doc.setTextColor(...darkGray);
       bucket.recommendations.forEach(rec => {
-        const lines = doc.splitTextToSize(`• ${rec}`, 160);
+        const lines = doc.splitTextToSize('- ' + rec, 160);
         doc.text(lines, 30, yPos);
         yPos += lines.length * 5;
       });
@@ -183,18 +173,16 @@ export const generatePDFReport = (analysisData, filename = 'CV') => {
     yPos += 8;
     
     doc.setFontSize(14);
-    doc.setFont('helvetica', 'bold');
     doc.setTextColor(...primaryBlue);
-    doc.text('🎯 Top Priority Improvements', 20, yPos);
+    doc.text('Top Priority Improvements', 20, yPos);
     
     yPos += 8;
     
     doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
     doc.setTextColor(...darkGray);
     
     analysisData.top_priorities.forEach((priority, i) => {
-      const lines = doc.splitTextToSize(`${i + 1}. ${priority}`, 165);
+      const lines = doc.splitTextToSize((i + 1) + '. ' + priority, 165);
       doc.text(lines, 25, yPos);
       yPos += lines.length * 5 + 2;
     });
@@ -202,20 +190,23 @@ export const generatePDFReport = (analysisData, filename = 'CV') => {
   
   // ==================== FOOTER ====================
   const pageCount = doc.internal.getNumberOfPages();
+  const today = new Date();
+  const dateStr = today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
+  
   for (let i = 1; i <= pageCount; i++) {
     doc.setPage(i);
     
     doc.setFontSize(8);
     doc.setTextColor(...lightGray);
     doc.text(
-      `Generated by PrepCheck • ${new Date().toLocaleDateString()}`,
+      'Generated by PrepCheck - ' + dateStr,
       105,
       285,
       { align: 'center' }
     );
     
     doc.text(
-      `Page ${i} of ${pageCount}`,
+      'Page ' + i + ' of ' + pageCount,
       190,
       285,
       { align: 'right' }
@@ -224,5 +215,5 @@ export const generatePDFReport = (analysisData, filename = 'CV') => {
   
   // ==================== SAVE PDF ====================
   const cleanFilename = filename.replace(/\.[^/.]+$/, ''); // Remove extension
-  doc.save(`${cleanFilename}-PrepCheck-Report.pdf`);
+  doc.save(cleanFilename + '-PrepCheck-Report.pdf');
 };
