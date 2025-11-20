@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion';
 import { ArrowLeft, Download, TrendingUp, CheckCircle, AlertCircle } from 'lucide-react';
 import { RadialBarChart, RadialBar, ResponsiveContainer, PolarAngleAxis } from 'recharts';
+import { generatePDFReport } from '../utils/pdfGenerator';
 
-function ResultsDashboard({ data, onBack }) {
+function ResultsDashboard({ data, onBack, filename = 'CV' }) {
   const { overall_score, buckets, summary, top_priorities } = data;
 
   // Determine overall rating
@@ -22,6 +23,15 @@ function ResultsDashboard({ data, onBack }) {
     fill: rating.color
   }];
 
+  const handleDownloadPDF = () => {
+    try {
+      generatePDFReport(data, filename);
+    } catch (error) {
+      console.error('PDF generation error:', error);
+      alert('Failed to generate PDF. Please try again.');
+    }
+  };
+
   return (
     <div className="results-container">
       {/* Header */}
@@ -31,7 +41,7 @@ function ResultsDashboard({ data, onBack }) {
           Analyse Another CV
         </button>
         
-        <button className="download-btn">
+        <button className="download-btn" onClick={handleDownloadPDF}>
           <Download size={20} />
           Download Report
         </button>
