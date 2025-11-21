@@ -5,12 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-<<<<<<< Updated upstream
-    "dev": "nodemon server.js"
-=======
     "dev": "nodemon server.js",
     "test": "jest --runInBand"
->>>>>>> Stashed changes
   },
   "dependencies": {
     "@google/generative-ai": "^0.2.1",
