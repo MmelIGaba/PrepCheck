@@ -11,5 +11,10 @@ export default defineConfig({
         changeOrigin: true,
       }
     }
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom', // React tests need a DOM
+    setupFiles: './src/setupTests.js', // optional, for testing-library setup
   }
 })

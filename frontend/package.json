@@ -5,7 +5,15 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:ui": "vitest --ui"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/setupTests.js"
+    ]
   },
   "dependencies": {
     "axios": "^1.6.2",
@@ -18,10 +26,21 @@
     "recharts": "^2.10.3"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.16",
+    "jest": "^30.2.0",
+    "jsdom": "^27.2.0",
+    "msw": "^2.12.2",
     "postcss": "^8.4.32",
     "tailwindcss": "^3.4.0",
+<<<<<<< Updated upstream
     "vite": "^5.0.8"
+=======
+    "vite": "^7.2.2",
+    "vitest": "^4.0.12"
+>>>>>>> Stashed changes
   }
 }
