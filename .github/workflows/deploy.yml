@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: "CI/CD Pipeline"
 
 on:
   push:
@@ -37,12 +37,11 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push image
-      uses: docker/build-push-action@v5
-      with:
-    context: ./backend
-    file: ./backend/Dockerfile
-    push: true
-    tags: ${{ secrets.DOCKER_USERNAME }}/prepcheck:latest
-    build-args: |
-      NODE_ENV=production
-
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/prepcheck:latest
+          build-args: |
+            NODE_ENV=production
