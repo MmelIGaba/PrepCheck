@@ -122,7 +122,7 @@ function App() {
 
       {/* Footer */}
       <footer className="app-footer">
-        <p>Powered by AI • Built for job seekers</p>
+        <p>Created by CloudCTRL • Built for job seekers</p>
       </footer>
     </div>
   );
