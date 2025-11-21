@@ -5,11 +5,6 @@ const multer = require("multer");
 const { parseCV } = require("./utils/cvParser");
 const { analyseCV } = require("./utils/aiAnalyser");
 require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
-const multer = require("multer");
-const { parseCV } = require("./utils/cvParser");
-const { analyseCV } = require("./utils/aiAnalyser");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
