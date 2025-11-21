@@ -4,6 +4,12 @@ const cors = require("cors");
 const multer = require("multer");
 const { parseCV } = require("./utils/cvParser");
 const { analyseCV } = require("./utils/aiAnalyser");
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const multer = require("multer");
+const { parseCV } = require("./utils/cvParser");
+const { analyseCV } = require("./utils/aiAnalyser");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -46,6 +52,7 @@ app.post("/api/analyse", upload.single("cv"), async (req, res) => {
 
     // Extract text from CV
     const cvText = await parseCV(req.file);
+
 
     if (!cvText || cvText.trim().length < 50) {
       return res.status(400).json({
@@ -129,7 +136,12 @@ app.use((error, req, res, next) => {
   res.status(500).json({ error: error.message });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
-});
+module.exports = app;
+// Only listen when not testing
+if (require.main === module) {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+    console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
+  });
+}
