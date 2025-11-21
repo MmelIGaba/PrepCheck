@@ -10,7 +10,12 @@ import './styles/App.css';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 function App() {
-  const [darkMode, setDarkMode] = useState(true);
+  // Detect system theme preference
+  const [darkMode, setDarkMode] = useState(() => {
+    // Check if user prefers dark mode
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
+  
   const [currentView, setCurrentView] = useState('upload'); // 'upload' | 'results'
   const [analysisData, setAnalysisData] = useState(null);
   const [uploadedFilename, setUploadedFilename] = useState('');
@@ -42,7 +47,7 @@ function App() {
 
     } catch (err) {
       console.error('❌ Upload error:', err);
-      setError(err.response?.data?.error || err.message || 'Failed to analyse CV');
+      setError(err.response?.data?.error || err.message || 'Unable to process this document. Please upload a valid CV/Resume in PDF or Word format');
     } finally {
       setLoading(false);
     }

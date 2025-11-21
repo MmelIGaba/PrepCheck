@@ -64,7 +64,7 @@ function UploadSection({ onUpload, loading, error }) {
         className="upload-header"
       >
         <h2>Analyse Your CV with AI</h2>
-        <p>Upload your CV and get instant insights, scores, and personalised recommendations</p>
+        <p>Upload your resume and get instant insights, scores, and personalized recommendations</p>
       </motion.div>
 
       <motion.div
@@ -133,7 +133,7 @@ function UploadSection({ onUpload, loading, error }) {
         )}
 
         <button
-          className="analyze-btn"
+          className="analyse-btn"
           onClick={handleSubmit}
           disabled={!selectedFile || loading}
         >
