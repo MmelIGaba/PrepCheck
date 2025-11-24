@@ -40,6 +40,6 @@ jobs:
         with:
           context: ./backend
           push: true
-          tags: your-docker-username/prepcheck-backend:latest
-          cache-from: type=registry,ref=your-docker-username/prepcheck-backend:cache
-          cache-to: type=registry,ref=your-docker-username/prepcheck-backend:cache,mode=max
+          tags: mmeligab/prepcheck-backend:latest
+          cache-from: type=registry,ref=mmeligab/prepcheck-backend:cache
+          cache-to: type=registry,ref=mmeligab/prepcheck-backend:cache,mode=max
