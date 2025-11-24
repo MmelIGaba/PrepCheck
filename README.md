@@ -476,12 +476,11 @@ If you encounter any issues:
 
 ## 👩🏽‍💻 The CloudCTRL Team
 
-| Member | Role | 
-|---------|------|
-| **Mmeli Dyantyi** | Scrum Master |
-| **Nqobile Masombuka** | Fullstack Developer. | 
-| **Boipelo Ngakane** | Fullstack Developer | 
-
+| Name | Role | Profile |
+|------|------|---------|
+| **Mmeli Dyantyi** | Scrum Master | [GitHub](https://github.com/MmelIGaba) |
+| **Nqobile Masombuka** | Fullstack Developer | [GitHub](https://github.com/n-qobile) |
+| **Boipelo Ngakane** | Fullstack Developer | [GitHub](https://github.com/boipelo-codes) |  
 
 <h3>Made with 💜 by CloudCTRL.</h3>  
 
