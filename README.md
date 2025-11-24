@@ -162,6 +162,12 @@ The application is designed to be hosted in a Docker-compatible environment:
 - Suitable for deployment on cloud platforms supporting Docker (e.g., AWS ECS, Azure Container Instances, DigitalOcean, or a VPS server with Docker installed).
 
 ---
+## Devs
+
+- Tech Lead Frontend / Backend: (Nqobile){https://github.com/n-qobile}
+- Writer: (Boipelo){https://github.com/boipelo-codes}
+- DevOps: (Mmeli){https://github.com/MmelIGaba}
+---
 
 ## License
 
