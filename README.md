@@ -164,9 +164,10 @@ The application is designed to be hosted in a Docker-compatible environment:
 ---
 ## Devs
 
-- Tech Lead Frontend / Backend: (Nqobile){https://github.com/n-qobile}
-- Writer: (Boipelo){https://github.com/boipelo-codes}
-- DevOps: (Mmeli){https://github.com/MmelIGaba}
+- Tech Lead Frontend / Backend: [Nqobile](https://github.com/n-qobile)
+- Writer: [Boipelo](https://github.com/boipelo-codes)
+- DevOps: [Mmeli](https://github.com/MmelIGaba)
+
 ---
 
 ## License
