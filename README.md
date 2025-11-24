@@ -238,13 +238,13 @@ docker build -t mmeligab/prepcheck-frontend:latest .
 **Using Docker Compose**  
 
 ```bash  
-<em>Start all services</em>    
+*Start all services*   
 docker-compose up -d  
 
-<em>View logs</em>  
+*View logs*  
 docker-compose logs -f  
 
-<em>Stop services</em>  
+*Stop services*  
 docker-compose down
 ```
 
@@ -253,10 +253,10 @@ Access the application at http://localhost:80
 **Pushing to Docker Hub**  
 
 ```bash  
-<em>Login to Docker Hub</em>  
+*Login to Docker Hub*  
 docker login
 
-<em>Push images </em>  
+*Push images*    
 docker push mmeligab/prepcheck-backend:latest  
 docker push mmeligab/prepcheck-frontend:latest
 ```
@@ -407,51 +407,51 @@ Content-Type: application/json
 └──────────────┬──────────────────────────┘  
                │ HTTPS  
                ▼  
-┌─────────────────────────────────────────┐  
-│      FRONTEND (React + Vite)            │  
-│  • React 18 with hooks                  │  
-│  • Framer Motion animations             │  
-│  • Recharts visualisation               │  
-│  • Dark/light mode support              │  
-│  • Responsive design                    │  
-└──────────────┬──────────────────────────┘  
-               │ REST API (HTTP/JSON)  
-               ▼  
-┌─────────────────────────────────────────┐  
-│    BACKEND (Node.js + Express)          │  
-│  • RESTful API endpoints                │  
-│  • File upload handling                 │  
-│  • Text extraction (PDF/DOCX)           │  
-│  • CV validation layer                  │  
-│  • Error handling & logging             │  
-└──────────────┬──────────────────────────┘  
-               │ API Calls (HTTPS)  
-               ▼  
-┌─────────────────────────────────────────┐  
-│  AI SERVICE (Google Gemini 2.0)         │  
-│  • Natural language processing          │  
-│  • Structured JSON generation           │  
-│  • Conversational AI (PrepPal)          │  
-│  • Context understanding                │  
-└─────────────────────────────────────────┘  
-               │  
-               ▼  
-┌─────────────────────────────────────────┐  
-│     DOCKER CONTAINERS                   │  
-│  • Frontend: Nginx Alpine               │  
-│  • Backend: Node 22 Bullseye            │  
-│  • Multi-stage builds                   │  
-└──────────────┬──────────────────────────┘  
-               │  
-               ▼  
-┌─────────────────────────────────────────┐  
-│   KUBERNETES ORCHESTRATION              │  
-│  • Deployments (3 replicas/service)     │  
-│  • Services (load balancing)            │  
-│  • Secrets (API keys)                   │  
-│  • ConfigMaps (configuration)           │  
-│  • Rolling updates (zero-downtime)      │  
-└─────────────────────────────────────────┘  
+┌─────────────────────────────────────────┐    
+│      FRONTEND (React + Vite)            │    
+│  • React 18 with hooks                  │    
+│  • Framer Motion animations             │    
+│  • Recharts visualisation               │    
+│  • Dark/light mode support              │    
+│  • Responsive design                    │    
+└──────────────┬──────────────────────────┘    
+               │ REST API (HTTP/JSON)    
+               ▼    
+┌─────────────────────────────────────────┐   
+│    BACKEND (Node.js + Express)          │   
+│  • RESTful API endpoints                │   
+│  • File upload handling                 │   
+│  • Text extraction (PDF/DOCX)           │   
+│  • CV validation layer                  │   
+│  • Error handling & logging             │   
+└──────────────┬──────────────────────────┘   
+               │ API Calls (HTTPS)   
+               ▼    
+┌─────────────────────────────────────────┐   
+│  AI SERVICE (Google Gemini 2.0)         │   
+│  • Natural language processing          │   
+│  • Structured JSON generation           │   
+│  • Conversational AI (PrepPal)          │   
+│  • Context understanding                │   
+└─────────────────────────────────────────┘   
+               │    
+               ▼    
+┌─────────────────────────────────────────┐     
+│     DOCKER CONTAINERS                   │    
+│  • Frontend: Nginx Alpine               │    
+│  • Backend: Node 22 Bullseye            │    
+│  • Multi-stage builds                   │    
+└──────────────┬──────────────────────────┘      
+               │    
+               ▼    
+┌─────────────────────────────────────────┐    
+│   KUBERNETES ORCHESTRATION              │    
+│  • Deployments (3 replicas/service)     │    
+│  • Services (load balancing)            │    
+│  • Secrets (API keys)                   │    
+│  • ConfigMaps (configuration)           │    
+│  • Rolling updates (zero-downtime)      │    
+└─────────────────────────────────────────┘    
 
 
 ## 🔒 Security Notes
