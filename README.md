@@ -18,9 +18,9 @@ Traditional CV feedback is:
 PrepCheck solves this by providing instant, intelligent, personalised feedback at no cost, making professional CV analysis accessible to everyone.   
 
 **Try PrepCheck now - No installation required!**  
-🔗 **Live Demo:**  
+🔗 **Live Demo:**  [PrepCheck](https://prepcheck-1.onrender.com)
 
-Click the link above to start receiving personalised CV analysis! 💕🎨🌟
+Click the link above to start receiving personalised CV analyses! 💕🎨🌟
 
 
 ## 🎨 Features
@@ -69,17 +69,17 @@ Five-Bucket Scoring System (100 points total):
 
 ## ⚙ How PrepCheck Works
 
-1. User uploads the CV in either PDF or Word format.   
+1. User uploads their CV in either PDF or Word format.   
 2. Backend verifies if the file is an appropriate CV.   
-3. Once verified- the backend sends this file to Gemini's API.  
+3. Once passed verification- the backend sends this file to Gemini's API.  
 4. The AI returns a personalised CV analysis.  
 6. Users can chat to PrepPal for more information on the CV analysis.  
 
 
 ## 💌 Themes
 
-- Light mode:
-- Dark mode: 
+- Light mode: light blues and purples with black font. 
+- Dark mode: dark blues and purples with white font. 
 
 ## 📷 Preview
 
@@ -143,7 +143,7 @@ Conversational AI capabilities.
 
 ## 🖥 How to Run  
 
-**Note:** PrepCheck is already live at  
+**Note:** PrepCheck is already live at [PrepCheck](https://prepcheck-1.onrender.com)   
 These instructions are for running the project on your local machine for development.  
 
 **Prerequisites**
@@ -268,7 +268,7 @@ docker push mmeligab/prepcheck-frontend:latest
 
 This project is deployed using: 
 
-- **Frontend:** Netlify (serves static files from `frontend/` folder).  
+- **Frontend:** Render (serves static files from `frontend/` folder).  
 - **Backend:** Render (Node.js/Express server from `backend/` folder).  
 
 ### Deploy Your Own Instance:
@@ -276,17 +276,18 @@ This project is deployed using:
 **Backend (Render):**
 1. Create an account at [Render](https://render.com/). 
 2. New Web Service → Connect Git repo. 
-3. Root Directory: `server`.  
+3. Root Directory: `backend`.  
 4. Build: `npm install`.  
 5. Start: `npm start`.  
 6. Add `GEMINI_API_KEY` environment variable.  
 
-**Frontend (Netlify):**
-1. Create an account at [Netlify](https://www.netlify.com/).  
-2. Import from Git or drag the `frontend/` folder.  
-3. Base Directory: `public`. 
-4. Publish Directory: `public`.  
-5. Update API URLs in JS files to point to your backend.
+**Frontend (Render):**
+1. Create an account at [Render](https://render.com/).  
+2. New Static Site → Connect Git repo.   
+3. Root Directory: `frontend`.  
+4. Publish Directory: `dist`.  
+5. Build: `npm install & npm run build`.   
+6. Add `VITE_APP_URL` with backend Render URL environment variable.  
 
 
 ## 📂 API Documentation  
@@ -308,9 +309,8 @@ GET /api/health
 **Response:**  
 
 ```json  
-{  
-  "status": "ok",  
-  "timestamp": "2025-11-22T10:30:00.000Z"  
+{   
+  "status”:“ok”,“message”:“Server is running!”   
 }
 ```
 
