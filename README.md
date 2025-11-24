@@ -164,9 +164,9 @@ The application is designed to be hosted in a Docker-compatible environment:
 ---
 ## Devs
 
-- Tech Lead Frontend / Backend: [Nqobile](https://github.com/n-qobile)
+- Tech Lead Frontend / Backend: [Nqobile](https://nqobile-portfolio.onrender.com/)
 - Writer: [Boipelo](https://github.com/boipelo-codes)
-- DevOps: [Mmeli](https://github.com/MmelIGaba)
+- DevOps: [Mmeli](https://personal-site-zeta-silk.vercel.app/)
 
 ---
 
