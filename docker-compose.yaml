@@ -2,21 +2,39 @@ services:
   backend:
     build:
       context: ./backend
+      dockerfile: Dockerfile
     ports:
-      - "6000:5000"          # Host port 6000 → container port 5000 (avoids conflicts)
+      - "6000:5000"                  # only needed for local API testing
     environment:
-      NODE_ENV: production
+      - NODE_ENV=production
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
-      interval: 5s
+      interval: 10s
+      timeout: 5s
       retries: 5
-      start_period: 5s
+      start_period: 10s
+    networks:
+      - app-network
 
   frontend:
     build:
       context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        # This becomes import.meta.env.VITE_API_BASE_URL in your React code
+        VITE_API_BASE_URL: /api
     ports:
-      - "80:80"
+      - "8080:80"                    # ← NOW CORRECT: Nginx listens on 80 inside container
     depends_on:
       backend:
         condition: service_healthy
+    # In production Docker, the frontend does NOT need the Vite proxy anymore.
+    # Instead we let Nginx proxy /api calls to the backend service:
+    environment:
+      - NGINX_BACKEND_HOST=backend    # used in nginx.conf template (see below)
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
